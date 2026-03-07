@@ -165,30 +165,8 @@ Training pipeline included:
 
 The core contribution of this project is a **multi-stage intelligent pipeline** that processes drone images before they enter the photogrammetry workflow.
 
-## Pipeline Stages
-## System Architecture
-```
-Incoming Drone Image
-        │
-        ▼
-Image Quality Metric Extraction
-        │
-        ▼
-CNN Classification (EfficientNet-B0)
-        │
-        ▼
- ┌───────────────┬───────────────────┬───────────────┐
- │ GOOD          │ RECOVERABLE       │ BAD           │
- │ Accepted      │ Enhanced          │ Discarded     │
- │               │ Re-classified     │               │
- └───────────────┴───────────────────┴───────────────┘
-        │
-        ▼
-Results Logged
-        │
-        ▼
-Self-Learning Dataset Growth
-```
+<img width="520" height="538" alt="image" src="https://github.com/user-attachments/assets/8b233cf7-2de8-4b9c-98cc-a647ca67eb02" />
+
 
 ---
 
@@ -215,32 +193,8 @@ If the model predicts an image with **high confidence**, that image can be added
 This allows the system to gradually improve its performance as more drone images are processed.
 
 ---
-## Project Structure
+<img width="357" height="586" alt="image" src="https://github.com/user-attachments/assets/b15997a3-2d15-431c-b35e-526697e3fccc" />
 
-```
-MainProject
-│
-├── classifier
-│   └── predict.py
-│
-├── enhancer
-│   └── enhance.py
-│
-├── metrics
-│   └── extract_metrics.py
-│
-├── pipeline
-│   └── run_full_pipeline.py
-│
-├── self_learning
-│   └── update_cnn.py
-│
-├── data
-│   ├── incoming_drone_images
-│   └── processed
-│
-└── README.md
-```
 
 ---
 
