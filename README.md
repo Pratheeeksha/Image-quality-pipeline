@@ -165,31 +165,29 @@ Training pipeline included:
 
 The core contribution of this project is a **multi-stage intelligent pipeline** that processes drone images before they enter the photogrammetry workflow.
 
-Pipeline stages:
-
+## Pipeline Stages
+## System Architecture
 ```
-
 Incoming Drone Image
-│
-▼
+        │
+        ▼
 Image Quality Metric Extraction
-│
-▼
+        │
+        ▼
 CNN Classification (EfficientNet-B0)
-│
-▼
-┌───────────────┬──────────────────┬───────────────┐
-│ GOOD          │ RECOVERABLE      │ BAD           │
-│ accepted      │ enhanced         │ discarded     │
-│               │ re-classified    │               │
-└───────────────┴──────────────────┴───────────────┘
-│
-▼
+        │
+        ▼
+ ┌───────────────┬───────────────────┬───────────────┐
+ │ GOOD          │ RECOVERABLE       │ BAD           │
+ │ Accepted      │ Enhanced          │ Discarded     │
+ │               │ Re-classified     │               │
+ └───────────────┴───────────────────┴───────────────┘
+        │
+        ▼
 Results Logged
-│
-▼
+        │
+        ▼
 Self-Learning Dataset Growth
-
 ```
 
 ---
@@ -217,11 +215,9 @@ If the model predicts an image with **high confidence**, that image can be added
 This allows the system to gradually improve its performance as more drone images are processed.
 
 ---
-
-# Project Structure
+## Project Structure
 
 ```
-
 MainProject
 │
 ├── classifier
@@ -244,7 +240,6 @@ MainProject
 │   └── processed
 │
 └── README.md
-
 ```
 
 ---
@@ -332,9 +327,4 @@ Possible future improvements include:
 
 ---
 
-# Author
-
-Drone Image Quality Assessment & Self-Learning Pipeline
-
-Developed for improving input quality in **drone-based photogrammetry workflows**.
 
