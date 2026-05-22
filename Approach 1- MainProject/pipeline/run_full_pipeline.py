@@ -26,6 +26,7 @@ os.makedirs(OUT_DIR, exist_ok=True)
 os.makedirs(SELF_POOL_DIR, exist_ok=True)
 
 SELF_LEARNING_THRESHOLD = 0.90
+GOOD_ACCEPT_CONFIDENCE = 0.65
 
 results = []
 
@@ -42,18 +43,26 @@ for img_name in os.listdir(DATA_DIR):
     # -------------------------------
     # Stage 1: Classification
     # -------------------------------
-    label, conf, probs = predict_image(img_path)
+    initial_label, conf, probs = predict_image(img_path)
 
     metrics = extract_metrics(img_path)
 
-    final_label = label
+    # Guardrail: low-confidence GOOD is treated as RECOVERABLE for re-check.
+    effective_label = initial_label
+    forced_recheck = False
+    if initial_label == "GOOD" and conf < GOOD_ACCEPT_CONFIDENCE:
+        effective_label = "RECOVERABLE"
+        forced_recheck = True
+
+    final_label = effective_label
     enhanced = False
+    recovered_to_good = False
     final_conf = conf  # Track final confidence
 
     # -------------------------------
     # Stage 2: Enhancement (if RECOVERABLE)
     # -------------------------------
-    if label == "RECOVERABLE":
+    if effective_label == "RECOVERABLE":
         enhanced_img = enhance_image(img_path, metrics)
         enh_path = os.path.join(OUT_DIR, "enh_" + img_name)
         cv2.imwrite(enh_path, enhanced_img)
@@ -64,6 +73,7 @@ for img_name in os.listdir(DATA_DIR):
             final_label = "GOOD"
             final_conf = new_conf
             enhanced = True
+            recovered_to_good = True
             print(f"  ↳ Enhanced → Upgraded to GOOD ({new_conf:.2f})")
         else:
             print(f"  ↳ Enhancement did not improve classification.")
@@ -85,9 +95,12 @@ for img_name in os.listdir(DATA_DIR):
     # -------------------------------
     results.append({
         "image": img_name,
-        "initial_label": label,
+        "initial_label": initial_label,
+        "effective_label": effective_label,
         "final_label": final_label,
         "confidence": final_conf,
+        "forced_recheck": forced_recheck,
+        "recovered_to_good": recovered_to_good,
         "enhanced": enhanced,
         **metrics
     })

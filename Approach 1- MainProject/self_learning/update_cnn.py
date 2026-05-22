@@ -69,15 +69,21 @@ def load_model(num_classes):
 # Step 3: Prepare Data Loaders
 # -------------------------------
 def get_dataloaders():
-    transform = transforms.Compose([
+    train_transform = transforms.Compose([
         transforms.Resize((224,224)),
         transforms.RandomHorizontalFlip(),
         transforms.ColorJitter(brightness=0.2, contrast=0.2),
         transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+    ])
+    eval_transform = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
     ])
 
-    train_dataset = datasets.ImageFolder(TRAIN_DIR, transform=transform)
-    val_dataset = datasets.ImageFolder(VAL_DIR, transform=transform)
+    train_dataset = datasets.ImageFolder(TRAIN_DIR, transform=train_transform)
+    val_dataset = datasets.ImageFolder(VAL_DIR, transform=eval_transform)
 
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
